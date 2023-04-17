@@ -6,16 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Incluye la biblioteca Leaflet -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="    crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>  
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-geosearch/3.7.0/bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-geosearch/3.7.0/geosearch.css" integrity="sha512-ai0NxYSxeh+RZ1GBMDY503sdYPVuMEx0sg3vKuFHN5DclEv0QMkHqJuYyogAHK/Eb4SWHlRWKmogCsm3ajgIUQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./resources/leaflet.css" crossorigin=""/>
+    <link rel="stylesheet" href="./resources/geosearch.css"/>
+
+    <script src="./resources/leaflet.js"></script>  
+    <script src="./resources/bundle.min.js"></script>
+
 
     <style>
         #mapid{ 
             margin: 0px;
-            height: 100%;
-            width: 100%;
+            height: 99%;
+            width: 99%;
             position: absolute; 
         }
     </style>
@@ -41,6 +43,15 @@
         maxZoom: 18,
     }).addTo(mymap);
 
+    // al clickear el mapa
+    mymap.on("click", (e) => {
+      mymap.removeLayer(currentMarker);
+      let {lat, lng} = e.latlng;
+      currentMarker = L.marker([lat, lng]).addTo(mymap);
+      document.getElementById('latitud').value = lat;
+			document.getElementById('longitud').value = lng;
+    });
+
     
     let searchMarker = L.marker();
     const provider = new window.GeoSearch.OpenStreetMapProvider();
@@ -54,6 +65,23 @@
       showMarker: true, // optional: true|false  - default true
       searchLabel: 'Ingrese calles o referencias(locales, negocios, plazas, iglesias, etc)',
     });
+
+    // se activa al realizar una busqueda de direccion
+    mymap.on("geosearch/showlocation", (e) =>{
+      mymap.removeLayer(currentMarker);
+      let marker = e.marker;
+      console.log(marker);
+      currentMarker = marker;
+      let {lat, lng} = marker._latlng;
+      document.getElementById('latitud').value = lat;
+			document.getElementById('longitud').value = lng;
+    });
+
+    try {
+      mymap.addControl(search);
+    } catch (error) {
+      console.log(error);
+    }
 
   </script>
 </html>
