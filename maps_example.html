@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mapa de OpenStreetMaps con Leaflet</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Incluye la biblioteca Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>  
+    <script src="https://unpkg.com/leaflet-geosearch@3.1.0/dist/bundle.min.js"></script>
+    <style>
+        #mapid{ 
+            margin: 0px;
+            height: 100%;
+            width: 100%;
+            position: absolute; 
+        }
+    </style>
+  </head>
+  <body>
+    <div id="mapid"></div>
+    <input type="hidden" id="latitud"/>
+    <input type="hidden" id="longitud"/>
+
+  </body>
+  <script type="application/javascript">
+    //posicion inicial la coop
+    var lat = -25.293246;
+    var lon = -57.576191;
+
+    // vista inicial
+    var mymap = L.map('mapid').setView([lat,lon], 15);
+    let currentMarker = L.marker([lat, lon]).addTo(mymap);
+
+    // Agrega una capa de mapa de OpenStreetMaps al objeto de mapa
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+        maxZoom: 18,
+    }).addTo(mymap);
+
+    
+    let searchMarker = L.marker();
+    const provider = new window.GeoSearch.OpenStreetMapProvider();
+    const search = new GeoSearch.GeoSearchControl({
+      provider: provider,
+      style: 'bar',
+      updateMap: true,
+      marker: searchMarker,
+      autoComplete: true,
+      autoCompleteDelay: 250,  // opcional: number - default 250 
+      showMarker: true, // optional: true|false  - default true
+      searchLabel: 'Ingrese calles o referencias(locales, negocios, plazas, iglesias, etc)',
+    });
+
+  </script>
+</html>
